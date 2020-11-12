@@ -1,0 +1,35 @@
+version: "3.1"
+services:
+
+    mariadb:
+      image: mariadb:10.4
+      container_name: library-mariadb
+      working_dir: /application
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=39r23udfij
+        - MYSQL_DATABASE=library
+        - MYSQL_USER=librarian
+        - MYSQL_PASSWORD=asdjapsodjpoa
+      ports:
+        - "8083:3306"
+
+    webserver:
+      image: nginx:alpine
+      container_name: library-webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "8080:80"
+
+    php-fpm:
+      build: docker/php-fpm
+      container_name: library-php-fpm
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+
